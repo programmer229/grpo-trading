@@ -1,0 +1,26 @@
+[project]
+name = "grpo-trader"
+version = "0.1.0"
+description = "GRPO Crypto Trading Agent"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "torch",
+    "transformers",
+    "yfinance",
+    "pandas",
+    "numpy",
+    "tqdm",
+    "accelerate",
+    "trl",
+    "peft",
+    "bitsandbytes"
+]
+
+[tool.black]
+line-length = 127
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.1.0",
+]

@@ -29,8 +29,14 @@ grpo_trader/
 
 ## Installation
 
+This project uses `uv` for dependency management.
+
+1. Clone the project and navigate to the root.
+2. Sync dependencies:
+
 ```bash
-pip install -r grpo_trader/requirements.txt
+uv sync
+source .venv/bin/activate
 ```
 
 ## Usage
@@ -43,4 +49,18 @@ python3 -m grpo_trader.main --ticker BTC-USD --epochs 1 --batch_size 2
 
 ```bash
 python3 -m unittest tests/test_grpo.py
+```
+
+## Development
+
+When you first clone the repo and you intend to push changes run the following:
+
+```bash
+pre-commit install
+```
+
+If you want to run pre-commit hooks manually run:
+
+```bash
+pre-commit run --all-files
 ```

@@ -1,6 +1,18 @@
+# Python-generated files
 __pycache__/
-*.pyc
-.DS_Store
-.env
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
 venv/
+.env
+
+# OS specific
+.DS_Store
+
+# Project specific
 grpo_trader_model/
