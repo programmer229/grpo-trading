@@ -39,11 +39,27 @@ uv sync
 source .venv/bin/activate
 ```
 
-## Usage
+## Usage (Custom Implementation)
 
 ```bash
 python3 -m grpo_trader.main --ticker BTC-USD --epochs 1 --batch_size 2
 ```
+
+## Usage (Slime Framework)
+
+To scale up training using the [Slime](https://github.com/THUDM/Slime) framework:
+
+1. **Install Slime**: Follow the instructions in the [Slime repository](https://github.com/THUDM/Slime).
+2. **Generate Data**:
+   ```bash
+   python3 -m grpo_trader.slime_adapter.gen_data --output train_data.jsonl
+   ```
+3. **Run Training**:
+   ```bash
+   bash run_slime.sh
+   ```
+
+   Ensure you have configured the `MODEL_PATH` in `run_slime.sh` and have the necessary GPU resources.
 
 ## Testing
 
