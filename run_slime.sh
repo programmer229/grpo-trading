@@ -32,6 +32,10 @@ python3 Slime/train.py \
     --num-attention-heads 14 \
     --seq-length 2048 \
     --max-position-embeddings 32768 \
+    --actor-num-nodes 1 \
+    --actor-num-gpus-per-node 1 \
+    --rollout-num-gpus 0 \
+    --colocate \
     --advantage-estimator grpo \
     --prompt-data $TRAIN_DATA \
     --input-key prompt \
