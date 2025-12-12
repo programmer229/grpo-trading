@@ -35,6 +35,8 @@ python3 Slime/train.py \
     --num-rollout 100 \
     --rollout-batch-size 4 \
     --n-samples-per-prompt 4 \
+    --global-batch-size 16 \
+    --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
     --save $OUTPUT_DIR \
     --use-wandb \
