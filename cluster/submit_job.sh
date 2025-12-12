@@ -36,5 +36,9 @@ export PYTHONPATH=$PYTHONPATH:$(pwd)/Megatron-LM
 # Install current package in editable mode so 'grpo_trader' is found
 pip install -e . --break-system-packages
 
+# Patch Slime for single-GPU FSDP
+echo "Patching Slime..."
+python3 patch_slime.py
+
 # Run the training script
 bash run_slime.sh
