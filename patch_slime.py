@@ -29,29 +29,24 @@ while i < len(lines):
         # We expect the next few lines to be the redistribute call
         # We will replace this entire block with our logic
         
-        # Construct our replacement block with correct indentation
-        indent = line[:line.find("if")]
-        new_lines.append(line) # Keep the if
+        # Construct our replacement block with HARDCODED indentation (12 spaces)
+        # This avoids issues with mixed tabs/spaces or incorrect indent detection
+        base_indent = " " * 12
+        
+        new_lines.append(line) # Keep the 'if isinstance(param, DTensor):'
         
         # Add our new logic
-        new_lines.append(f'{indent}    # Patched by grpo-trader')
-        new_lines.append(f'{indent}    if param.device_mesh.size() == 1:')
-        new_lines.append(f'{indent}        print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")')
-        new_lines.append(f'{indent}        param = param.to_local()')
-        new_lines.append(f'{indent}    else:')
-        new_lines.append(f'{indent}        param = param.redistribute(')
-        new_lines.append(f'{indent}            placements=[Replicate()] * param.device_mesh.ndim,')
-        new_lines.append(f'{indent}            async_op=True,')
-        new_lines.append(f'{indent}        ).to_local()')
+        new_lines.append(f'{base_indent}    # Patched by grpo-trader')
+        new_lines.append(f'{base_indent}    if param.device_mesh.size() == 1:')
+        new_lines.append(f'{base_indent}        print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")')
+        new_lines.append(f'{base_indent}        param = param.to_local()')
+        new_lines.append(f'{base_indent}    else:')
+        new_lines.append(f'{base_indent}        param = param.redistribute(')
+        new_lines.append(f'{base_indent}            placements=[Replicate()] * param.device_mesh.ndim,')
+        new_lines.append(f'{base_indent}            async_op=True,')
+        new_lines.append(f'{base_indent}        ).to_local()')
         
         # Skip the original lines until we pass the .to_local() call
-        # The original block was:
-        #     param = param.redistribute(
-        #         placements=[Replicate()] * param.device_mesh.ndim,
-        #         async_op=True,
-        #     ).to_local()
-        
-        # We skip lines until we see .to_local()
         j = i + 1
         while j < len(lines):
             if ".to_local()" in lines[j]:
@@ -61,9 +56,8 @@ while i < len(lines):
             j += 1
         
         if not found:
-             # Fallback if we couldn't find the end of the block, just append the rest
              print("Warning: Could not find end of block (.to_local()), aborting patch for this block")
-             new_lines.append(lines[i+1]) # Just append the next line and continue normal processing
+             new_lines.append(lines[i+1]) 
              i += 1
     else:
         new_lines.append(line)
@@ -72,7 +66,15 @@ while i < len(lines):
 if found:
     with open(file_path, "w") as f:
         f.write("\n".join(new_lines))
-    print("Successfully patched update_weight_utils.py with robust method")
+    print("Successfully patched update_weight_utils.py with hardcoded indentation")
+    
+    # Verify by printing the patched lines
+    print("--- Verifying patched content (lines 60-80) ---")
+    with open(file_path, "r") as f:
+        patched_lines = f.readlines()
+        for k in range(max(0, 60), min(len(patched_lines), 80)):
+            print(f"{k+1}: {patched_lines[k].rstrip()}")
+    print("---------------------------------------------")
 else:
     print("Target code block not found. Dumping file content for debugging:")
     print(content)
