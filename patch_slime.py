@@ -11,6 +11,13 @@ if not os.path.exists(file_path):
 
 print(f"Patching {file_path}...")
 
+# Reset the file first to ensure we are patching clean code
+# This fixes issues if previous patches corrupted the file
+dir_path = os.path.dirname(file_path)
+repo_root = os.path.abspath(os.path.join(dir_path, "../../../.."))
+print(f"Resetting {file_path} in {repo_root}...")
+os.system(f"cd {repo_root} && git checkout slime/backends/fsdp_utils/update_weight_utils.py")
+
 with open(file_path, "r") as f:
     lines = f.readlines()
 
