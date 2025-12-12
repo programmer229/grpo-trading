@@ -14,14 +14,14 @@ cd /workspace
 
 # Install dependencies
 echo "Installing dependencies..."
-pip install yfinance pandas
+pip install yfinance pandas --break-system-packages
 
 # Install Slime (if not present or to ensure latest)
 # Using git+https to install directly
-pip install git+https://github.com/THUDM/Slime.git
+pip install git+https://github.com/THUDM/Slime.git --break-system-packages
 
 # Install current package in editable mode so 'grpo_trader' is found
-pip install -e .
+pip install -e . --break-system-packages
 
 # Run the training script
 bash run_slime.sh
