@@ -45,6 +45,7 @@ python3 Slime/train.py \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
     --save $OUTPUT_DIR \
+    --save-interval 50 \
     --use-wandb \
     --wandb-project $WANDB_PROJECT \
     --eval-interval 10 \
