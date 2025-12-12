@@ -36,6 +36,7 @@ python3 Slime/train.py \
     --model-name $MODEL_PATH \
     --hf-checkpoint $MODEL_PATH \
     --train-backend fsdp \
+    --distributed-backend gloo \
     --actor-num-nodes 1 \
     --actor-num-gpus-per-node 1 \
     --rollout-num-gpus 0 \
