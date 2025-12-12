@@ -14,6 +14,10 @@ export WANDB_PROJECT="grpo-trader"
 # Ray Configuration
 export RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
 
+# Debugging
+export NCCL_DEBUG=INFO
+export TORCH_DISTRIBUTED_DEBUG=DETAIL
+
 # Generate data if not exists
 if [ ! -f "$TRAIN_DATA" ]; then
     echo "Generating data..."
