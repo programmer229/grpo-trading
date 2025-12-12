@@ -38,7 +38,9 @@ python3 Slime/train.py \
     --max-position-embeddings 32768 \
     --swiglu \
     --normalization RMSNorm \
+    --norm-epsilon 1e-6 \
     --use-rotary-position-embeddings \
+    --rotary-base 1000000 \
     --actor-num-nodes 1 \
     --actor-num-gpus-per-node 1 \
     --rollout-num-gpus 0 \
