@@ -26,6 +26,7 @@ export PYTHONPATH=$PYTHONPATH:.
 
 python3 Slime/train.py \
     --model-name $MODEL_PATH \
+    --use-hf-config-for-megatron \
     --advantage-estimator grpo \
     --prompt-data $TRAIN_DATA \
     --input-key prompt \
