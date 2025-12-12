@@ -25,26 +25,37 @@ while i < len(lines):
     if "if isinstance(param, DTensor):" in line:
         # Found the start of the block
         print(f"Found target block at line {i+1}")
-        # Check if it looks like the block we want to replace
-        # We expect the next few lines to be the redistribute call
-        # We will replace this entire block with our logic
+        print(f"Original line repr: {repr(line)}")
         
-        # Construct our replacement block with HARDCODED indentation (12 spaces)
-        # This avoids issues with mixed tabs/spaces or incorrect indent detection
-        base_indent = " " * 12
+        # Detect indentation from the line itself
+        indent_str = line[:line.find("if")]
+        print(f"Detected indentation repr: {repr(indent_str)}")
         
+        # Verify indentation is valid (only spaces or only tabs)
+        if " " in indent_str and "\t" in indent_str:
+            print("WARNING: Mixed tabs and spaces in indentation! This will likely cause SyntaxError.")
+            # Fallback to 12 spaces if mixed
+            indent_str = " " * 12
+            print("Fallback to 12 spaces.")
+            
+        # Define one level of indentation
+        if "\t" in indent_str:
+            one_indent = "\t"
+        else:
+            one_indent = "    " # 4 spaces
+            
         new_lines.append(line) # Keep the 'if isinstance(param, DTensor):'
         
-        # Add our new logic
-        new_lines.append(f'{base_indent}    # Patched by grpo-trader')
-        new_lines.append(f'{base_indent}    if param.device_mesh.size() == 1:')
-        new_lines.append(f'{base_indent}        print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")')
-        new_lines.append(f'{base_indent}        param = param.to_local()')
-        new_lines.append(f'{base_indent}    else:')
-        new_lines.append(f'{base_indent}        param = param.redistribute(')
-        new_lines.append(f'{base_indent}            placements=[Replicate()] * param.device_mesh.ndim,')
-        new_lines.append(f'{base_indent}            async_op=True,')
-        new_lines.append(f'{base_indent}        ).to_local()')
+        # Add our new logic using the detected indentation
+        new_lines.append(f'{indent_str}{one_indent}# Patched by grpo-trader')
+        new_lines.append(f'{indent_str}{one_indent}if param.device_mesh.size() == 1:')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}param = param.to_local()')
+        new_lines.append(f'{indent_str}{one_indent}else:')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}param = param.redistribute(')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}{one_indent}placements=[Replicate()] * param.device_mesh.ndim,')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}{one_indent}async_op=True,')
+        new_lines.append(f'{indent_str}{one_indent}{one_indent}).to_local()')
         
         # Skip the original lines until we pass the .to_local() call
         j = i + 1
@@ -66,14 +77,14 @@ while i < len(lines):
 if found:
     with open(file_path, "w") as f:
         f.write("\n".join(new_lines))
-    print("Successfully patched update_weight_utils.py with hardcoded indentation")
+    print("Successfully patched update_weight_utils.py with dynamic indentation")
     
-    # Verify by printing the patched lines
+    # Verify by printing the patched lines with repr to see hidden chars
     print("--- Verifying patched content (lines 60-80) ---")
     with open(file_path, "r") as f:
         patched_lines = f.readlines()
         for k in range(max(0, 60), min(len(patched_lines), 80)):
-            print(f"{k+1}: {patched_lines[k].rstrip()}")
+            print(f"{k+1}: {repr(patched_lines[k])}")
     print("---------------------------------------------")
 else:
     print("Target code block not found. Dumping file content for debugging:")
