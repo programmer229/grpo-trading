@@ -16,9 +16,11 @@ cd /workspace
 echo "Installing dependencies..."
 pip install yfinance pandas --break-system-packages
 
-# Install Slime (if not present or to ensure latest)
-# Using git+https to install directly
-pip install git+https://github.com/THUDM/Slime.git --break-system-packages
+# Install Slime (Clone to get train.py)
+if [ ! -d "Slime" ]; then
+    git clone https://github.com/THUDM/Slime.git
+fi
+pip install -e Slime --break-system-packages
 
 # Install current package in editable mode so 'grpo_trader' is found
 pip install -e . --break-system-packages

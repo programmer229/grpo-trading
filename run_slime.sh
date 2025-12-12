@@ -21,7 +21,10 @@ fi
 # Run Slime Training
 echo "Starting GRPO Training with Slime..."
 
-python3 -m slime.train \
+# Ensure PYTHONPATH includes current directory for custom modules
+export PYTHONPATH=$PYTHONPATH:.
+
+python3 Slime/train.py \
     --model_name_or_path $MODEL_PATH \
     --method grpo \
     --prompt_data $TRAIN_DATA \
