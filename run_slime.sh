@@ -25,21 +25,20 @@ echo "Starting GRPO Training with Slime..."
 export PYTHONPATH=$PYTHONPATH:.
 
 python3 Slime/train.py \
-    --model_name_or_path $MODEL_PATH \
-    --method grpo \
-    --prompt_data $TRAIN_DATA \
-    --input_key prompt \
-    --metadata_key metadata \
-    --custom_rm_path grpo_trader.slime_adapter.reward:reward_func \
-    --learning_rate 1e-6 \
-    --num_rollouts 100 \
-    --rollout_batch_size 4 \
-    --n_samples_per_prompt 4 \
-    --max_new_tokens 512 \
-    --output_dir $OUTPUT_DIR \
-    --zero_stage 2 \
-    --gradient_checkpointing \
-    --report_to wandb \
-    --eval_interval 10 \
-    --eval_prompt_data test_split $TEST_DATA \
-    --n_samples_per_eval_prompt 4
+    --model-name $MODEL_PATH \
+    --advantage-estimator grpo \
+    --prompt-data $TRAIN_DATA \
+    --input-key prompt \
+    --metadata-key metadata \
+    --custom-rm-path grpo_trader.slime_adapter.reward:reward_func \
+    --lr 1e-6 \
+    --num-rollout 100 \
+    --rollout-batch-size 4 \
+    --n-samples-per-prompt 4 \
+    --rollout-max-response-len 512 \
+    --save $OUTPUT_DIR \
+    --use-wandb \
+    --wandb-project $WANDB_PROJECT \
+    --eval-interval 10 \
+    --eval-prompt-data test_split $TEST_DATA \
+    --n-samples-per-eval-prompt 4
