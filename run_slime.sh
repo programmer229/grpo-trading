@@ -29,12 +29,16 @@ export PYTHONPATH=$PYTHONPATH:.
 python3 Slime/train.py \
     --model-name $MODEL_PATH \
     --hf-checkpoint $MODEL_PATH \
-    --use-hf-config-for-megatron \
     --num-layers 24 \
     --hidden-size 896 \
     --num-attention-heads 14 \
+    --ffn-hidden-size 4864 \
+    --padded-vocab-size 151936 \
     --seq-length 2048 \
     --max-position-embeddings 32768 \
+    --swiglu \
+    --normalization RMSNorm \
+    --use-rotary-position-embeddings \
     --actor-num-nodes 1 \
     --actor-num-gpus-per-node 1 \
     --rollout-num-gpus 0 \
