@@ -19,6 +19,7 @@ export NCCL_DEBUG=INFO
 export TORCH_DISTRIBUTED_DEBUG=DETAIL
 export NCCL_P2P_DISABLE=1
 export NCCL_IB_DISABLE=1
+export PYTHONUNBUFFERED=1
 
 # Generate data if not exists
 if [ ! -f "$TRAIN_DATA" ]; then

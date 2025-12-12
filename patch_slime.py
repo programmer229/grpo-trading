@@ -27,6 +27,7 @@ target_code = """            if isinstance(param, DTensor):
 replacement_code = """            if isinstance(param, DTensor):
                 # async version of param.full_tensor
                 if param.device_mesh.size() == 1:
+                    print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")
                     param = param.to_local()
                 else:
                     param = param.redistribute(
