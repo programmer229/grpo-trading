@@ -12,6 +12,11 @@ mkdir -p logs
 # Navigate to workspace
 cd /workspace
 
+# Load secrets if present
+if [ -f .env ]; then
+    export $(cat .env | xargs)
+fi
+
 # Install dependencies
 echo "Installing dependencies..."
 pip install yfinance pandas --break-system-packages

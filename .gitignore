@@ -16,3 +16,4 @@ venv/
 
 # Project specific
 grpo_trader_model/
+.env
