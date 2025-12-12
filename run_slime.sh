@@ -27,6 +27,11 @@ export PYTHONPATH=$PYTHONPATH:.
 python3 Slime/train.py \
     --model-name $MODEL_PATH \
     --use-hf-config-for-megatron \
+    --num-layers 24 \
+    --hidden-size 896 \
+    --num-attention-heads 14 \
+    --seq-length 2048 \
+    --max-position-embeddings 32768 \
     --advantage-estimator grpo \
     --prompt-data $TRAIN_DATA \
     --input-key prompt \
