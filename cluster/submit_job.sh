@@ -22,6 +22,12 @@ if [ ! -d "Slime" ]; then
 fi
 pip install -e Slime --break-system-packages
 
+# Install Megatron-LM (Required dependency)
+if [ ! -d "Megatron-LM" ]; then
+    git clone https://github.com/NVIDIA/Megatron-LM.git
+fi
+export PYTHONPATH=$PYTHONPATH:$(pwd)/Megatron-LM
+
 # Install current package in editable mode so 'grpo_trader' is found
 pip install -e . --break-system-packages
 
