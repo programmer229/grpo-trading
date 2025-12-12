@@ -1,9 +1,9 @@
 import os
+import re
 
 file_path = "Slime/slime/backends/fsdp_utils/update_weight_utils.py"
 
 if not os.path.exists(file_path):
-    print(f"File not found: {file_path}")
     # Try absolute path in container
     file_path = "/workspace/Slime/slime/backends/fsdp_utils/update_weight_utils.py"
     if not os.path.exists(file_path):
@@ -15,77 +15,75 @@ print(f"Patching {file_path}...")
 with open(file_path, "r") as f:
     content = f.read()
 
-# Robust patcher
-found = False
-lines = content.splitlines()
-new_lines = []
-i = 0
-while i < len(lines):
-    line = lines[i]
-    if "if isinstance(param, DTensor):" in line:
-        # Found the start of the block
-        print(f"Found target block at line {i+1}")
-        print(f"Original line repr: {repr(line)}")
-        
-        # Detect indentation from the line itself
-        indent_str = line[:line.find("if")]
-        print(f"Detected indentation repr: {repr(indent_str)}")
-        
-        # Verify indentation is valid (only spaces or only tabs)
-        if " " in indent_str and "\t" in indent_str:
-            print("WARNING: Mixed tabs and spaces in indentation! This will likely cause SyntaxError.")
-            # Fallback to 12 spaces if mixed
-            indent_str = " " * 12
-            print("Fallback to 12 spaces.")
-            
-        # Define one level of indentation
-        if "\t" in indent_str:
-            one_indent = "\t"
-        else:
-            one_indent = "    " # 4 spaces
-            
-        new_lines.append(line) # Keep the 'if isinstance(param, DTensor):'
-        
-        # Add our new logic using the detected indentation
-        new_lines.append(f'{indent_str}{one_indent}# Patched by grpo-trader')
-        new_lines.append(f'{indent_str}{one_indent}if param.device_mesh.size() == 1:')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}param = param.to_local()')
-        new_lines.append(f'{indent_str}{one_indent}else:')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}param = param.redistribute(')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}{one_indent}placements=[Replicate()] * param.device_mesh.ndim,')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}{one_indent}async_op=True,')
-        new_lines.append(f'{indent_str}{one_indent}{one_indent}).to_local()')
-        
-        # Skip the original lines until we pass the .to_local() call
-        j = i + 1
-        while j < len(lines):
-            if ".to_local()" in lines[j]:
-                i = j + 1 # Continue after this line
-                found = True
-                break
-            j += 1
-        
-        if not found:
-             print("Warning: Could not find end of block (.to_local()), aborting patch for this block")
-             new_lines.append(lines[i+1]) 
-             i += 1
-    else:
-        new_lines.append(line)
-        i += 1
+# 1. Inject helper function if not present
+helper_func = """
+def _safe_redistribute(param):
+    # Patched by grpo-trader
+    if param.device_mesh.size() == 1:
+        print(f"[DEBUG] Patch active: Skipping redistribute for single-device mesh")
+        return param.to_local()
+    return param.redistribute(
+        placements=[Replicate()] * param.device_mesh.ndim,
+        async_op=True,
+    ).to_local()
+"""
 
-if found:
-    with open(file_path, "w") as f:
-        f.write("\n".join(new_lines))
-    print("Successfully patched update_weight_utils.py with dynamic indentation")
+if "_safe_redistribute" not in content:
+    # Insert after imports (look for the last import or the logger definition)
+    # A safe place is before "class UpdateWeight"
+    if "class UpdateWeight" in content:
+        content = content.replace("class UpdateWeight", f"{helper_func}\n\nclass UpdateWeight")
+        print("Injected helper function.")
+    else:
+        print("Could not find 'class UpdateWeight' insertion point.")
+        exit(1)
+
+# 2. Replace the problematic block with the helper call
+# We look for the specific block structure
+# The block is:
+# param = param.redistribute(
+#     placements=[Replicate()] * param.device_mesh.ndim,
+#     async_op=True,
+# ).to_local()
+
+# We'll use a regex to be robust against whitespace
+pattern = r"param\s*=\s*param\.redistribute\s*\(\s*placements=\[Replicate\(\)\]\s*\*\s*param\.device_mesh\.ndim,\s*async_op=True,\s*\)\.to_local\(\)"
+
+match = re.search(pattern, content, re.DOTALL)
+if match:
+    print("Found problematic block.")
+    # We need to preserve the indentation of the match
+    start_idx = match.start()
+    # Find the start of the line to get indentation
+    line_start = content.rfind('\n', 0, start_idx) + 1
+    indent = content[line_start:start_idx]
     
-    # Verify by printing the patched lines with repr to see hidden chars
-    print("--- Verifying patched content (lines 60-80) ---")
+    # Construct replacement
+    replacement = f"param = _safe_redistribute(param)"
+    
+    # Replace
+    content = content[:start_idx] + replacement + content[match.end():]
+    print("Replaced block with helper call.")
+    
+    with open(file_path, "w") as f:
+        f.write(content)
+    print("Successfully patched update_weight_utils.py")
+    
+    # Verify
+    print("--- Verification (grep _safe_redistribute) ---")
     with open(file_path, "r") as f:
-        patched_lines = f.readlines()
-        for k in range(max(0, 60), min(len(patched_lines), 80)):
-            print(f"{k+1}: {repr(patched_lines[k])}")
-    print("---------------------------------------------")
+        for line in f:
+            if "_safe_redistribute" in line:
+                print(line.rstrip())
+    print("--------------------------------------------")
+
 else:
-    print("Target code block not found. Dumping file content for debugging:")
-    print(content)
+    if "_safe_redistribute(param)" in content:
+        print("Patch already applied (helper call found).")
+    else:
+        print("Could not find problematic block via regex. Dumping snippet for debug:")
+        idx = content.find("redistribute")
+        if idx != -1:
+            print(content[idx-50:idx+200])
+        else:
+            print("redistribute not found in file.")
