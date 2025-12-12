@@ -38,7 +38,7 @@ python3 Slime/train.py \
     --prompt-data $TRAIN_DATA \
     --input-key prompt \
     --metadata-key metadata \
-    --custom-rm-path grpo_trader.slime_adapter.reward:reward_func \
+    --custom-rm-path grpo_trader.slime_adapter.reward.reward_func \
     --lr 1e-6 \
     --num-rollout 100 \
     --rollout-batch-size 4 \
