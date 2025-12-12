@@ -9,7 +9,6 @@ TEST_DATA="$DATA_DIR/test_data.jsonl"
 OUTPUT_DIR="output_grpo"
 
 # WandB Configuration
-export WANDB_API_KEY="fe5c554ccf23a3cf456386d1759680f75166adb5"
 export WANDB_PROJECT="grpo-trader"
 
 # Ray Configuration
