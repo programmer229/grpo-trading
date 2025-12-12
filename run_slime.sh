@@ -46,6 +46,7 @@ python3 Slime/train.py \
     --global-batch-size 4 \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
+    --sglang-mem-fraction-static 0.5 \
     --save $OUTPUT_DIR \
     --save-interval 50 \
     --use-wandb \
