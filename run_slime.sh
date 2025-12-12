@@ -52,6 +52,7 @@ python3 Slime/train.py \
     --save-interval 50 \
     --use-wandb \
     --wandb-project $WANDB_PROJECT \
+    --wandb-group "grpo-experiment" \
     --eval-interval 10 \
     --eval-prompt-data test_split $TEST_DATA \
     --n-samples-per-eval-prompt 4
