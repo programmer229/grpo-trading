@@ -17,6 +17,8 @@ if [ -f .env ]; then
     export $(cat .env | xargs)
 fi
 
+export PYTHONUNBUFFERED=1
+
 # Install dependencies
 echo "Installing dependencies..."
 pip install yfinance pandas --break-system-packages
