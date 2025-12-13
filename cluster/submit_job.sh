@@ -4,7 +4,7 @@
 #SBATCH --error=logs/%x-%j.err
 #SBATCH --gpus=1
 #SBATCH --time=04:00:00
-#SBATCH --partition=training
+#SBATCH --partition=val
 #SBATCH --container-image=slimerl/slime:latest
 #SBATCH --container-mounts=./:/workspace
 
