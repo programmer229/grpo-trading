@@ -44,9 +44,9 @@ cd Slime
 git checkout .
 cd ..
 
-# Patch Slime for single-GPU FSDP (DISABLED due to SyntaxError)
-# echo "Patching Slime..."
-# python3 patch_slime.py
+# Patch Slime for single-GPU FSDP
+echo "Patching Slime..."
+python3 patch_slime.py
 
 # Run the training script
 bash run_slime.sh
