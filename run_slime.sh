@@ -20,10 +20,14 @@ export PYTHONUNBUFFERED=1
 
 # Generate data if not exists
 # Generate data if not exists or empty
-if [ ! -s "$TRAIN_DATA" ]; then
-    echo "Data file missing or empty. Generating data..."
-    python3 -m grpo_trader.slime_adapter.gen_data --output_dir "$DATA_DIR" || exit 1
-fi
+# Always regenerate to ensure format is correct
+echo "Regenerating data to ensure correct format..."
+rm -f "$TRAIN_DATA" "$TEST_DATA"
+python3 -m grpo_trader.slime_adapter.gen_data --output_dir "$DATA_DIR" || exit 1
+
+echo "Checking data files..."
+ls -l "$TRAIN_DATA" "$TEST_DATA"
+wc -l "$TRAIN_DATA" "$TEST_DATA"
 
 # Run Slime Training
 echo "Starting GRPO Training with Slime..."
