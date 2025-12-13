@@ -16,6 +16,7 @@ export RAY_ACCEL_ENV_VAR_OVERRIDE_ON_ZERO=0
 
 export NCCL_P2P_DISABLE=1
 export NCCL_IB_DISABLE=1
+export PYTHONUNBUFFERED=1
 
 # Generate data if not exists
 if [ ! -f "$TRAIN_DATA" ]; then
