@@ -3,7 +3,7 @@ import argparse
 from grpo_trader.data.loader import fetch_crypto_data, split_data
 from grpo_trader.data.processor import CryptoDataset
 
-def generate_jsonl(output_dir, ticker="BTC-USD", period="1mo"):
+def generate_jsonl(output_dir, ticker="BTC-USD", period="1y"):
     print(f"Fetching data for {ticker}...")
     df = fetch_crypto_data(ticker, period)
     
@@ -38,6 +38,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output_dir", type=str, default=".")
     parser.add_argument("--ticker", type=str, default="BTC-USD")
+    parser.add_argument("--period", type=str, default="1y")
     args = parser.parse_args()
     
-    generate_jsonl(args.output_dir, args.ticker)
+    generate_jsonl(args.output_dir, args.ticker, args.period)
