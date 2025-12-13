@@ -3,7 +3,7 @@
 # Configuration
 # Configuration
 MODEL_PATH="Qwen/Qwen2.5-0.5B-Instruct" # Or local path
-DATA_DIR="."
+DATA_DIR="$(pwd)"
 TRAIN_DATA="$DATA_DIR/train_data.jsonl"
 TEST_DATA="$DATA_DIR/test_data.jsonl"
 OUTPUT_DIR="output_grpo"

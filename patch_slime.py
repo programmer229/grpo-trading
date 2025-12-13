@@ -169,6 +169,15 @@ if os.path.exists(rollout_file):
             check_code = [
                 f"{indent}if not samples:\n",
                 f"{indent}    print(f'[DEBUG] data_source returned empty samples. remaining={{state.remaining_batch_size}}')\n",
+                f"{indent}    print(f'[DEBUG] data_source type: {{type(data_source)}}')\n",
+                f"{indent}    try:\n",
+                f"{indent}        if hasattr(data_source, '__self__'):\n",
+                f"{indent}             ds = data_source.__self__\n",
+                f"{indent}             print(f'[DEBUG] data_source.dataset len: {{len(ds) if hasattr(ds, \"__len__\") else \"N/A\"}}')\n",
+                f"{indent}             print(f'[DEBUG] data_source.dataset samples: {{len(ds.samples) if hasattr(ds, \"samples\") else \"N/A\"}}')\n",
+                f"{indent}             if hasattr(ds, 'samples') and len(ds.samples) > 0:\n",
+                f"{indent}                 print(f'[DEBUG] First sample: {{ds.samples[0]}}')\n",
+                f"{indent}    except Exception as e: print(f'[DEBUG] Error inspecting data_source: {{e}}')\n",
                 f"{indent}    if not state.pendings:\n",
                 f"{indent}        raise RuntimeError('Cannot fill batch size: data_source exhausted and no pending tasks. Check your train_data.jsonl!')\n",
                 f"{indent}    break\n"
