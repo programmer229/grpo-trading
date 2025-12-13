@@ -16,7 +16,7 @@ print(f"Patching {file_path}...")
 dir_path = os.path.dirname(file_path)
 repo_root = os.path.abspath(os.path.join(dir_path, "../../../.."))
 print(f"Resetting {file_path} in {repo_root}...")
-os.system(f"cd {repo_root} && git checkout slime/backends/fsdp_utils/update_weight_utils.py")
+# os.system(f"cd {repo_root} && git checkout slime/backends/fsdp_utils/update_weight_utils.py")
 
 with open(file_path, "r") as f:
     lines = f.readlines()
@@ -149,7 +149,7 @@ if os.path.exists(rollout_file):
     dir_path = os.path.dirname(rollout_file)
     repo_root = os.path.abspath(os.path.join(dir_path, "../../.."))
     print(f"Resetting {rollout_file} in {repo_root}...")
-    os.system(f"cd {repo_root} && git checkout slime/rollout/sglang_rollout.py")
+    # os.system(f"cd {repo_root} && git checkout slime/rollout/sglang_rollout.py")
 
     with open(rollout_file, "r") as f:
         lines = f.readlines()
@@ -209,7 +209,7 @@ if os.path.exists(data_file):
     dir_path = os.path.dirname(data_file)
     repo_root = os.path.abspath(os.path.join(dir_path, "../../.."))
     print(f"Resetting {data_file} in {repo_root}...")
-    os.system(f"cd {repo_root} && git checkout slime/utils/data.py")
+    # os.system(f"cd {repo_root} && git checkout slime/utils/data.py")
 
     with open(data_file, "r") as f:
         lines = f.readlines()
