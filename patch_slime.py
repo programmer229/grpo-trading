@@ -128,9 +128,61 @@ if patched_block:
     print("--------------------")
 else:
     print("Warning: Did not find block to patch.")
+
     # Dump relevant section
     print("--- Dump of relevant section ---")
     for line in lines:
         if "DTensor" in line or "redistribute" in line:
             print(line.rstrip())
+
+
+# --- Patch sglang_rollout.py ---
+print("\n--- Patching sglang_rollout.py ---")
+rollout_file = "Slime/slime/rollout/sglang_rollout.py"
+if not os.path.exists(rollout_file):
+    rollout_file = "/workspace/Slime/slime/rollout/sglang_rollout.py"
+
+if os.path.exists(rollout_file):
+    print(f"Patching {rollout_file}...")
+    
+    # Reset file
+    dir_path = os.path.dirname(rollout_file)
+    repo_root = os.path.abspath(os.path.join(dir_path, "../../.."))
+    print(f"Resetting {rollout_file} in {repo_root}...")
+    os.system(f"cd {repo_root} && git checkout slime/rollout/sglang_rollout.py")
+
+    with open(rollout_file, "r") as f:
+        lines = f.readlines()
+        
+    new_lines = []
+    patched = False
+    
+    # We look for:
+    # samples = data_source(args.over_sampling_batch_size)
+    # state.submit_generate_tasks(samples)
+    
+    for i, line in enumerate(lines):
+        new_lines.append(line)
+        if "samples = data_source(args.over_sampling_batch_size)" in line:
+            # Inject check after this line
+            indent = line[:line.find("samples")]
+            check_code = [
+                f"{indent}if not samples:\n",
+                f"{indent}    print(f'[DEBUG] data_source returned empty samples. remaining={{state.remaining_batch_size}}')\n",
+                f"{indent}    if not state.pendings:\n",
+                f"{indent}        raise RuntimeError('Cannot fill batch size: data_source exhausted and no pending tasks. Check your train_data.jsonl!')\n",
+                f"{indent}    break\n"
+            ]
+            new_lines.extend(check_code)
+            patched = True
+            print("Injected empty sample check.")
+            
+    if patched:
+        with open(rollout_file, "w") as f:
+            f.writelines(new_lines)
+        print("Successfully patched sglang_rollout.py")
+    else:
+        print("Warning: Could not find target line in sglang_rollout.py")
+else:
+    print(f"File not found: {rollout_file}")
 
