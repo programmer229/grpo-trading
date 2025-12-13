@@ -50,20 +50,19 @@ python3 Slime/train.py \
     --custom-rm-path grpo_trader.slime_adapter.reward.reward_func \
     --lr 1e-6 \
     --num-rollout 1000 \
-    --rollout-batch-size 2 \
+    --rollout-batch-size 16 \
     --n-samples-per-prompt 2 \
-    --global-batch-size 4 \
-    --num-steps-per-rollout 1 \
+    --global-batch-size 32 \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
-    --rollout-max-prompt-len 8192 \
-    --rollout-max-context-len 16384 \
+    --rollout-max-prompt-len 1024 \
+    --rollout-max-context-len 2048 \
     --sglang-mem-fraction-static 0.5 \
     --save $OUTPUT_DIR \
-    --save-interval 50 \
+    --save-interval 100 \
     --use-wandb \
     --wandb-project $WANDB_PROJECT \
     --wandb-group "grpo-experiment" \
-    --eval-interval 10 \
+    --eval-interval 100 \
     --eval-prompt-data test_split $TEST_DATA \
     --n-samples-per-eval-prompt 4
