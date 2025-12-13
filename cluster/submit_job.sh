@@ -2,7 +2,7 @@
 #SBATCH --job-name=grpo-trader
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
-#SBATCH --gpus=8
+#SBATCH --gpus=1
 #SBATCH --time=04:00:00
 #SBATCH --partition=training
 #SBATCH --container-image=slimerl/slime:latest
