@@ -30,6 +30,13 @@ ls -l "$TRAIN_DATA" "$TEST_DATA"
 wc -l "$TRAIN_DATA" "$TEST_DATA"
 
 # Run Slime Training
+echo "--- System Topology & Bandwidth Check ---"
+nvidia-smi topo -m || echo "nvidia-smi topo failed"
+echo "-----------------------------------------"
+echo "--- InfiniBand Status ---"
+ibv_devinfo || echo "ibv_devinfo failed (no InfiniBand found)"
+echo "-----------------------------------------"
+
 echo "Starting GRPO Training with Slime..."
 
 # Ensure PYTHONPATH includes current directory for custom modules
