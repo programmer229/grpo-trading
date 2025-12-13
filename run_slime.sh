@@ -54,7 +54,9 @@ python3 Slime/train.py \
     --n-samples-per-prompt 2 \
     --global-batch-size 4 \
     --num-steps-per-rollout 1 \
+    --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
+    --max-prompt-len 8192 \
     --sglang-mem-fraction-static 0.5 \
     --save $OUTPUT_DIR \
     --save-interval 50 \

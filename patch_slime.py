@@ -195,3 +195,61 @@ if os.path.exists(rollout_file):
 else:
     print(f"File not found: {rollout_file}")
 
+
+# --- Patch slime/utils/data.py ---
+print("\n--- Patching slime/utils/data.py ---")
+data_file = "Slime/slime/utils/data.py"
+if not os.path.exists(data_file):
+    data_file = "/workspace/Slime/slime/utils/data.py"
+
+if os.path.exists(data_file):
+    print(f"Patching {data_file}...")
+    
+    # Reset file
+    dir_path = os.path.dirname(data_file)
+    repo_root = os.path.abspath(os.path.join(dir_path, "../../.."))
+    print(f"Resetting {data_file} in {repo_root}...")
+    os.system(f"cd {repo_root} && git checkout slime/utils/data.py")
+
+    with open(data_file, "r") as f:
+        lines = f.readlines()
+        
+    new_lines = []
+    patched = False
+    
+    # We look for:
+    # if _should_skip_prompt(prompt, tokenizer, processor, max_length, apply_chat_template_kwargs):
+    #     continue
+    
+    for i, line in enumerate(lines):
+        new_lines.append(line)
+        if "if _should_skip_prompt(prompt, tokenizer, processor, max_length, apply_chat_template_kwargs):" in line:
+            # Inject debug print before continue
+            indent = line[:line.find("if")]
+            # The next line should be 'continue' with one more indent level
+            # We will insert print before it
+            
+            # Actually, we can just insert before the if check to see what's happening
+            # But better to insert inside the if block
+            pass
+            
+    # Re-read and do it properly with index
+    final_lines = []
+    for i, line in enumerate(lines):
+        final_lines.append(line)
+        if "if _should_skip_prompt(prompt, tokenizer, processor, max_length, apply_chat_template_kwargs):" in line:
+            # Look ahead for continue
+            if i + 1 < len(lines) and "continue" in lines[i+1]:
+                indent = lines[i+1][:lines[i+1].find("continue")]
+                final_lines.append(f"{indent}print(f'[DEBUG] Skipped prompt due to length. max_length={{max_length}}')\n")
+                patched = True
+                
+    if patched:
+        with open(data_file, "w") as f:
+            f.writelines(final_lines)
+        print("Successfully patched slime/utils/data.py")
+    else:
+        print("Warning: Could not find target line in slime/utils/data.py")
+else:
+    print(f"File not found: {data_file}")
+
