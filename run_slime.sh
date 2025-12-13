@@ -50,14 +50,14 @@ python3 Slime/train.py \
     --custom-rm-path grpo_trader.slime_adapter.reward.reward_func \
     --lr 1e-6 \
     --num-rollout 1000 \
-    --rollout-batch-size 16 \
+    --rollout-batch-size 64 \
     --n-samples-per-prompt 2 \
-    --global-batch-size 32 \
+    --global-batch-size 128 \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
     --rollout-max-prompt-len 1024 \
     --rollout-max-context-len 2048 \
-    --sglang-mem-fraction-static 0.5 \
+    --sglang-mem-fraction-static 0.6 \
     --save $OUTPUT_DIR \
     --save-interval 100 \
     --use-wandb \
