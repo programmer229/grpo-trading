@@ -50,9 +50,9 @@ python3 Slime/train.py \
     --custom-rm-path grpo_trader.slime_adapter.reward.reward_func \
     --lr 1e-6 \
     --num-rollout 1000 \
-    --rollout-batch-size 16 \
+    --rollout-batch-size 128 \
     --n-samples-per-prompt 2 \
-    --global-batch-size 64 \
+    --global-batch-size 512 \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
     --rollout-max-prompt-len 1024 \
