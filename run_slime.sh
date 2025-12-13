@@ -19,9 +19,10 @@ export NCCL_IB_DISABLE=1
 export PYTHONUNBUFFERED=1
 
 # Generate data if not exists
-if [ ! -f "$TRAIN_DATA" ]; then
-    echo "Generating data..."
-    python3 -m grpo_trader.slime_adapter.gen_data --output_dir "$DATA_DIR"
+# Generate data if not exists or empty
+if [ ! -s "$TRAIN_DATA" ]; then
+    echo "Data file missing or empty. Generating data..."
+    python3 -m grpo_trader.slime_adapter.gen_data --output_dir "$DATA_DIR" || exit 1
 fi
 
 # Run Slime Training
