@@ -34,10 +34,16 @@ async def reward_func(args, sample, **kwargs):
 
     if match:
         action_str = match.group(1).strip().upper()
+        found_action = False
         for act, val in action_map.items():
             if act in action_str:
                 direction = val
+                found_action = True
                 break
+        
+        # If the model output something like "Hold" or "Wait", it's now invalid
+        if not found_action:
+             return -0.5
     else:
         # Penalty for invalid format (override positive reward)
         return -0.5
