@@ -51,17 +51,12 @@ async def reward_func(args, sample, **kwargs):
         
     price_change_pct = (next_price - current_price) / current_price
     
-    # Transaction Fee (0.1%) for BUY or SELL
-    # We subtract this from the percentage change effectively
-    fee = 0.001 if direction != 0 else 0.0
-    
     # PnL Reward = Direction * % Change
-    # We subtract fee from the potential gain
-    # e.g. Buy: (+1 * change) - fee
-    # e.g. Sell: (-1 * change) - fee
-    # e.g. Hold: (0 * change) - 0 = 0
+    # e.g. Buy: (+1 * change)
+    # e.g. Sell: (-1 * change)
+    # e.g. Hold: (0 * change) = 0
     
-    pnl_component = (direction * price_change_pct) - fee
+    pnl_component = (direction * price_change_pct)
     
     # Scale up to make it comparable to format reward
     reward += pnl_component * 100
