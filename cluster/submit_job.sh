@@ -20,6 +20,9 @@ if [ -f .env ]; then
 fi
 
 export PYTHONUNBUFFERED=1
+export HF_HOME="/workspace/hf_cache"
+export HF_HUB_ENABLE_HF_TRANSFER=0
+mkdir -p "$HF_HOME"
 
 # Install dependencies
 echo "Installing dependencies..."
