@@ -74,5 +74,20 @@ async def reward_func(args, sample, **kwargs):
     
     # Scale up to make it comparable to format reward
     reward += pnl_component * 100
+
+    # Log baseline rewards (Always Buy / Always Sell) for comparison
+    try:
+        import wandb
+        if wandb.run:
+            # Baseline assumes correct format (+0.1)
+            buy_reward = 0.1 + (1.0 * price_change_pct * 100)
+            sell_reward = 0.1 + (-1.0 * price_change_pct * 100)
+            
+            wandb.log({
+                "baseline/buy_reward": buy_reward,
+                "baseline/sell_reward": sell_reward
+            })
+    except ImportError:
+        pass
     
     return float(reward)
