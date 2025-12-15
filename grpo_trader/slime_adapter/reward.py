@@ -96,7 +96,7 @@ async def reward_func(args, sample, **kwargs):
                 metrics["eval/baseline/buy_reward"] = buy_reward_pts
                 metrics["eval/baseline/sell_reward"] = sell_reward_pts
                 
-                wandb.log(metrics)
+                #wandb.log(metrics)
         except ImportError:
             pass
     
