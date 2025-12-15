@@ -9,10 +9,33 @@ def format_market_data_prompt(df_window):
     
     for i, row in df_window.iterrows():
         date_str = str(row['date']) if 'date' in row else f"T-{len(df_window)-i-1}"
-        prompt += f"Time: {date_str} | Price: {row['close']:.2f} | SMA5: {row['sma_5']:.2f} | SMA20: {row['sma_20']:.2f}\n"
+        returns_str = f"{row['returns']*100:+.2f}%" if not pd.isna(row['returns']) else "N/A"
+        prompt += f"Time: {date_str} | Price: {row['close']:.2f} ({returns_str}) | SMA5: {row['sma_5']:.2f} | SMA20: {row['sma_20']:.2f}\n"
         
+    # Add Technical Analysis Summary
+    latest = df_window.iloc[-1]
+    
+    # RSI Analysis
+    rsi_text = f"RSI is {latest['rsi']:.1f}"
+    if latest['rsi'] > 70: rsi_text += " (Overbought)"
+    elif latest['rsi'] < 30: rsi_text += " (Oversold)"
+    else: rsi_text += " (Neutral)"
+    
+    # MACD Analysis
+    macd_text = "MACD is "
+    if latest['macd'] > latest['macd_signal']: macd_text += "Bullish (Above Signal)"
+    else: macd_text += "Bearish (Below Signal)"
+    
+    # Bollinger Bands Analysis
+    bb_text = "Price is "
+    if latest['close'] > latest['bb_upper']: bb_text += "Above Upper Bollinger Band (High Volatility/Possible Reversal)"
+    elif latest['close'] < latest['bb_lower']: bb_text += "Below Lower Bollinger Band (Oversold/Possible Reversal)"
+    else: bb_text += "Within Bollinger Bands"
+    
+    prompt += f"\nTechnical Analysis:\n- {rsi_text}\n- {macd_text}\n- {bb_text}\n"
+    
     prompt += "\nInstructions:\n"
-    prompt += "1. Analyze the trend based on price and moving averages.\n"
+    prompt += "1. Analyze the trend based on price, moving averages, and technical indicators.\n"
     prompt += "2. Output your reasoning inside <think> tags.\n"
     prompt += "3. Output your final decision (Buy, Sell, or Hold) inside <answer> tags.\n"
     prompt += "Format: <think> reasoning </think> <answer> Action </answer>\n"

@@ -14,25 +14,31 @@ def generate_jsonl(output_dir, ticker="BTC-USD", period="1y"):
         "train": CryptoDataset(train_df),
         "test": CryptoDataset(test_df)
     }
-    
+
     for split, dataset in datasets.items():
         output_file = f"{output_dir}/{split}_data.jsonl"
         print(f"Generating {len(dataset)} samples for {split}...")
-        
-        with open(output_file, 'w') as f:
-            for i in range(len(dataset)):
-                item = dataset[i]
-                record = {
-                    "prompt": item['prompt'],
-                    "label": "", 
-                    "metadata": {
-                        "current_price": item['current_price'],
-                        "next_price": item['next_price']
-                    }
+        records = []
+        for i in range(len(dataset)):
+            item = dataset[i]
+            record = {
+                "prompt": item['prompt'],
+                "label": "",
+                "metadata": {
+                    "current_price": item['current_price'],
+                    "next_price": item['next_price']
                 }
+            }
+            records.append(record)
+
+        import random
+        random.shuffle(records)
+
+        with open(output_file, 'w') as f:
+            for record in records:
                 f.write(json.dumps(record) + "\n")
-                
-        print(f"Saved to {output_file}")
+
+        print(f"Saved {len(records)} shuffled samples to {output_file}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -40,5 +46,5 @@ if __name__ == "__main__":
     parser.add_argument("--ticker", type=str, default="BTC-USD")
     parser.add_argument("--period", type=str, default="1y")
     args = parser.parse_args()
-    
+
     generate_jsonl(args.output_dir, args.ticker, args.period)

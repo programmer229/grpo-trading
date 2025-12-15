@@ -24,6 +24,27 @@ def fetch_crypto_data(ticker="BTC-USD", period="1mo", interval="1h"):
     df['sma_5'] = df['close'].rolling(window=5).mean()
     df['sma_20'] = df['close'].rolling(window=20).mean()
     df['volatility'] = df['returns'].rolling(window=10).std()
+
+    # --- Advanced Technical Indicators ---
+    # RSI (14)
+    delta = df['close'].diff()
+    gain = (delta.where(delta > 0, 0)).rolling(window=14).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=14).mean()
+    rs = gain / loss
+    df['rsi'] = 100 - (100 / (1 + rs))
+
+    # MACD (12, 26, 9)
+    exp1 = df['close'].ewm(span=12, adjust=False).mean()
+    exp2 = df['close'].ewm(span=26, adjust=False).mean()
+    df['macd'] = exp1 - exp2
+    df['macd_signal'] = df['macd'].ewm(span=9, adjust=False).mean()
+
+    # Bollinger Bands (20, 2)
+    df['bb_upper'] = df['sma_20'] + (df['close'].rolling(window=20).std() * 2)
+    df['bb_lower'] = df['sma_20'] - (df['close'].rolling(window=20).std() * 2)
+
+    # Volume Trend (SMA 20)
+    df['volume_sma'] = df['volume'].rolling(window=20).mean()
     
     df = df.dropna()
     return df
