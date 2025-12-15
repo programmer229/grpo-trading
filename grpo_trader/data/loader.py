@@ -19,6 +19,15 @@ def fetch_crypto_data(ticker="BTC-USD", period="1mo", interval="1h"):
     # Standardize column names
     df.columns = [c.lower() for c in df.columns]
     
+    # Ensure 'date' column exists (yfinance might name it 'Date' or 'Datetime')
+    if 'date' not in df.columns:
+        # Check if 'datetime' exists
+        if 'datetime' in df.columns:
+            df = df.rename(columns={'datetime': 'date'})
+        # Check if 'index' exists (if original index had no name)
+        elif 'index' in df.columns:
+             df = df.rename(columns={'index': 'date'})
+    
     # Calculate some basic indicators for the model to use
     df['returns'] = df['close'].pct_change()
     df['sma_5'] = df['close'].rolling(window=5).mean()
