@@ -9,13 +9,13 @@ echo "Creating $HOME/.config/enroot/enroot.conf..."
 cat > $HOME/.config/enroot/enroot.conf <<EOF
 ENROOT_DATA_PATH $HOME/.enroot/data
 ENROOT_CACHE_PATH $HOME/.enroot/cache
-ENROOT_RUNTIME_PATH $HOME/.enroot/runtime
+ENROOT_RUNTIME_PATH /tmp/enroot-runtime-\$USER
 EOF
 
 # 3. Export variables just in case
 export ENROOT_DATA_PATH=$HOME/.enroot/data
 export ENROOT_CACHE_PATH=$HOME/.enroot/cache
-export ENROOT_RUNTIME_PATH=$HOME/.enroot/runtime
+export ENROOT_RUNTIME_PATH=/tmp/enroot-runtime-$USER
 
 # 4. Submit the job
 echo "Submitting job..."
