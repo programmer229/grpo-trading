@@ -26,7 +26,8 @@ def generate_jsonl(output_dir, ticker="BTC-USD", period="1y"):
                 "label": "",
                 "metadata": {
                     "current_price": item['current_price'],
-                    "next_price": item['next_price']
+                    "next_price": item['next_price'],
+                    "split": split
                 }
             }
             records.append(record)
