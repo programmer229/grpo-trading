@@ -40,7 +40,7 @@ python3 Slime/train.py \
     --hf-checkpoint $MODEL_PATH \
     --train-backend fsdp \
     --actor-num-nodes 1 \
-    --actor-num-gpus-per-node 1 \
+    --actor-num-gpus-per-node 8 \
     --rollout-num-gpus 0 \
     --colocate \
     --advantage-estimator grpo \
@@ -52,7 +52,7 @@ python3 Slime/train.py \
     --num-rollout 1000 \
     --rollout-batch-size 64 \
     --n-samples-per-prompt 2 \
-    --global-batch-size 128 \
+    --global-batch-size 256 \
     --num-steps-per-rollout 1 \
     --rollout-max-response-len 512 \
     --rollout-max-prompt-len 1024 \
