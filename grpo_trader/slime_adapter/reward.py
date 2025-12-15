@@ -21,7 +21,8 @@ async def reward_func(args, sample, **kwargs):
     response = sample.response
     match = re.search(r"<answer>\s*(.*?)\s*</answer>", response, re.IGNORECASE | re.DOTALL)
     
-    action_map = {"BUY": 1, "SELL": -1, "HOLD": 0}
+    # Removed HOLD to force binary decision
+    action_map = {"BUY": 1, "SELL": -1}
     direction = 0
     
     # Format Reward: Small bonus for getting the syntax right
@@ -38,7 +39,6 @@ async def reward_func(args, sample, **kwargs):
                 metrics = {
                     "action/buy": 1.0 if "BUY" in action_str else 0.0,
                     "action/sell": 1.0 if "SELL" in action_str else 0.0,
-                    "action/hold": 1.0 if "HOLD" in action_str else 0.0,
                 }
                 wandb.log(metrics)
         except ImportError:

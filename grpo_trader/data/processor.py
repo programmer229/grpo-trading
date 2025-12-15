@@ -37,7 +37,7 @@ def format_market_data_prompt(df_window):
     prompt += "\nInstructions:\n"
     prompt += "1. Analyze the trend based on price, moving averages, and technical indicators.\n"
     prompt += "2. Output your reasoning inside <think> tags.\n"
-    prompt += "3. Output your final decision (Buy, Sell, or Hold) inside <answer> tags.\n"
+    prompt += "3. Output your final decision (Buy or Sell) inside <answer> tags.\n"
     prompt += "Format: <think> reasoning </think> <answer> Action </answer>\n"
     
     # Return as chat format for Slime/SGLang
