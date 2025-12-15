@@ -29,6 +29,20 @@ async def reward_func(args, sample, **kwargs):
     
     if match:
         action_str = match.group(1).strip().upper()
+        
+        # Log action distribution
+        try:
+            import wandb
+            if wandb.run:
+                metrics = {
+                    "action/buy": 1.0 if "BUY" in action_str else 0.0,
+                    "action/sell": 1.0 if "SELL" in action_str else 0.0,
+                    "action/hold": 1.0 if "HOLD" in action_str else 0.0,
+                }
+                wandb.log(metrics)
+        except ImportError:
+            pass
+
         for act, val in action_map.items():
             if act in action_str:
                 direction = val
