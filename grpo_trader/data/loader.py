@@ -7,7 +7,7 @@ def fetch_crypto_data(ticker="BTC-USD", period="1mo", interval="1h"):
     Fetches crypto data from yfinance.
     """
     print(f"Fetching data for {ticker}...")
-    df = yf.download(ticker, period=period, interval=interval, progress=False)
+    df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
     if df.empty:
         raise ValueError(f"No data found for {ticker}")
     
