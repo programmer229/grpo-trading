@@ -78,21 +78,25 @@ async def reward_func(args, sample, **kwargs):
                 
                 # 2. Model Reward Conditional on Action
                 # If we successfully made a decision, track the reward for that specific decision
+                # User requested "one point", so we log the raw PnL (percentage) * 100 -> Percentage points
+                # e.g. 0.01 (1%) -> 1.0 point
+                pnl_points = price_change_pct * 100.0
+
                 if match:
                     if "BUY" in action_str:
-                        metrics["eval/reward/model_buy"] = reward
+                        metrics["eval/reward/model_buy"] = pnl_points
                     elif "SELL" in action_str:
-                        metrics["eval/reward/model_sell"] = reward
+                        metrics["eval/reward/model_sell"] = -pnl_points # Correct direction for sell
 
                 # 3. Baseline Rewards (What if we always bought/sold?)
-                # Baseline assumes correct format (+0.01)
-                buy_reward = 0.01 + (1.0 * price_change_pct * 1000)
-                sell_reward = 0.01 + (-1.0 * price_change_pct * 1000)
+                # Log as percentage points as well
+                buy_reward_pts = (1.0 * price_change_pct * 100.0)
+                sell_reward_pts = (-1.0 * price_change_pct * 100.0)
                 
-                metrics["eval/baseline/buy_reward"] = buy_reward
-                metrics["eval/baseline/sell_reward"] = sell_reward
+                metrics["eval/baseline/buy_reward"] = buy_reward_pts
+                metrics["eval/baseline/sell_reward"] = sell_reward_pts
                 
-                #wandb.log(metrics)
+                wandb.log(metrics)
         except ImportError:
             pass
     
