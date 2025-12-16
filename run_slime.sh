@@ -2,7 +2,7 @@
 
 # Configuration
 # Configuration
-MODEL_PATH="Qwen/Qwen2.5-0.5B-Instruct" # Or local path
+MODEL_PATH="Qwen/Qwen2.5-7B-Instruct" # Upgraded from 0.5B
 DATA_DIR="$(pwd)"
 TRAIN_DATA="$DATA_DIR/train_data.jsonl"
 TEST_DATA="$DATA_DIR/test_data.jsonl"
