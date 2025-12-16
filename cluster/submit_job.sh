@@ -3,7 +3,7 @@
 #SBATCH --output=logs/%x-%j.out
 #SBATCH --error=logs/%x-%j.err
 #SBATCH --gpus=8
-#SBATCH --time=04:00:00
+#SBATCH --time=23:00:00
 #SBATCH --partition=training
 #SBATCH --container-image=slimerl/slime:latest
 #SBATCH --container-mounts=./:/workspace
