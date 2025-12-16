@@ -54,10 +54,10 @@ python3 Slime/train.py \
     --n-samples-per-prompt 2 \
     --global-batch-size 256 \
     --num-steps-per-rollout 1 \
-    --rollout-max-response-len 512 \
-    --rollout-max-prompt-len 1024 \
-    --rollout-max-context-len 2048 \
-    --sglang-mem-fraction-static 0.6 \
+    --rollout-max-response-len 2048 \
+    --rollout-max-prompt-len 2048 \
+    --rollout-max-context-len 4096 \
+    --sglang-mem-fraction-static 0.5 \
     --save $OUTPUT_DIR \
     --save-interval 100 \
     --use-wandb \
