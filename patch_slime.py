@@ -64,7 +64,6 @@ while i < len(lines):
     line = lines[i]
     
     if "if isinstance(param, DTensor):" in line:
-        final_lines.append(line)
         # We are entering the block.
         # We expect the next lines to contain the redistribute call.
         # We will consume lines until we see the end of the redistribute call (ending in .to_local())
@@ -87,6 +86,8 @@ while i < len(lines):
             
         if found_redistribute:
             print(f"Found redistribute call at line {j+1}")
+            final_lines.append(line) # Add the IF line only if we are patching
+            
             # Keep lines between i and j (e.g. comments)
             for k in range(i+1, j):
                 final_lines.append(lines[k])
@@ -109,6 +110,7 @@ while i < len(lines):
             continue
         else:
             print("Warning: Found 'if isinstance' but not 'redistribute' call nearby.")
+            # Fall through to append the line normally
             
     final_lines.append(line)
     i += 1
